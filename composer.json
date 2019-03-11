@@ -1,0 +1,24 @@
+{
+  "name": "jswh/defer",
+  "type": "project",
+  "license": "GNU",
+  "version": "0.0.1",
+  "autoload": {
+    "psr-4": {"": "src/"}
+  },
+  "require": {
+    "jswh/routeless": "@dev",
+    "firebase/php-jwt": "^5.0",
+    "qiniu/php-sdk": "^7.2",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^4.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://gitee.com/jswh/routeless.git"
+    }
+  ]
+}

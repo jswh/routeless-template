@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+php -v
+echo "php ./src/Migrations/migration.php $*"
+php ./src/Migrations/migration.php $*
