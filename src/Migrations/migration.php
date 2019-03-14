@@ -8,9 +8,11 @@ use Illuminate\Database\Schema\Builder;
 
 $app = require __DIR__ . '/../boot.php';
 
+$dbName = env('DB_NAME', 'mysql');
 $cfg = require __DIR__ . '/../../config/database.php';
 $path = __DIR__ . '/Schemas';
-$migration = boot($cfg, $path);
+
+$migration = boot($dbName, $cfg, $path);
 
 if (count($argv) < 2) {
     usage();
@@ -38,16 +40,17 @@ function usage() {
     echo "usage: \n $commandBase run \n $commandBase make [name] \n";
 }
 
-function boot($cfg, $path) {
+function boot($dbName, $cfg, $path) {
 
     $files = new Filesystem();
     $files->files($path);
 
     $dbFactory = new ConnectionFactory(new \Illuminate\Container\Container());
-    $conn = $dbFactory->make($cfg['mysql']);
 
-    $db = new ConnectionResolver(['mysql' => $conn]);
-    $db->setDefaultConnection('mysql');
+    $conn = $dbFactory->make($cfg[$dbName]);
+
+    $db = new ConnectionResolver([$dbName => $conn]);
+    $db->setDefaultConnection($dbName);
 
     $repository = new DatabaseMigrationRepository($db, 'migrations');
     $m = new Migrator($repository, $db, $files);
@@ -62,7 +65,7 @@ class Schema {
     public static function table($table, callable $callback) {
         global $cfg;
         $dbFactory = new ConnectionFactory(new \Illuminate\Container\Container());
-        $conn = $dbFactory->make($cfg['mysql']);
+        $conn = $dbFactory->make($cfg[$dbName]);
         $builder = $conn->getSchemaBuilder();
         $builder->table($table, $callback);
     }
@@ -70,7 +73,7 @@ class Schema {
     public static function create($table, callable $callback) {
         global $cfg;
         $dbFactory = new ConnectionFactory(new \Illuminate\Container\Container());
-        $conn = $dbFactory->make($cfg['mysql']);
+        $conn = $dbFactory->make($cfg[$dbName]);
 
         $builder = $conn->getSchemaBuilder();
         $builder->create($table, $callback);

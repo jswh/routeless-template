@@ -13,6 +13,10 @@ return [
         'strict' => false,
         'engine' => null,
     ],
+    'sqlite' => [
+        'driver' => 'sqlite',
+        'database' => '/tmp/test.sqlite'
+    ],
     'redis' => [
         'host' => '127.0.0.1',
         'port' => '6379',

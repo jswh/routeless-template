@@ -1,3 +1,4 @@
+DB_NAME=sqlite
 DB_HOST=161.129.34.76
 DB_PORT=3306
 DB_DATABASE=defer_test
