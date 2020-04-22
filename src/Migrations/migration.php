@@ -12,19 +12,19 @@ $dbName = env('DB_NAME', 'mysql');
 $cfg = require __DIR__ . '/../../config/database.php';
 $path = __DIR__ . '/Schemas';
 
-$migration = boot($dbName, $cfg, $path);
 
 if (count($argv) < 2) {
     usage();
 } else {
     switch ($argv[1]) {
         case 'run':
+            $migration = boot($dbName, $cfg, $path);
             $migration->run($path);
             break;
         case 'make':
             $name = $argv['2'] ?? null;
             if ($name) {
-                $creator = new MigrationCreator($migration->getFilesystem());
+                $creator = new MigrationCreator(filesystem($path));
                 $creator->create($name, $path);
             } else {
                 usage();
@@ -40,11 +40,16 @@ function usage() {
     echo "usage: \n $commandBase run \n $commandBase make [name] \n";
 }
 
-function boot($dbName, $cfg, $path) {
+function filesystem($path) {
 
     $files = new Filesystem();
     $files->files($path);
 
+    return $files;
+}
+
+function boot($dbName, $cfg, $path) {
+    $files = filesystem($path);
     $dbFactory = new ConnectionFactory(new \Illuminate\Container\Container());
 
     $conn = $dbFactory->make($cfg[$dbName]);
